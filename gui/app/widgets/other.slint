@@ -1,0 +1,17 @@
+import { Panel, HL } from "panel.slint";
+
+export component Btn-Wrapper inherits Panel {
+    height: 50px;
+    width: self.height;
+    HL {
+        alignment: center;
+        cross-axis-alignment: center;
+        @children
+    }
+}
+
+export component Toolbar-Group inherits Panel {
+    HL {
+        @children
+    }
+}

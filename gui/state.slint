@@ -1,0 +1,22 @@
+import { Glue } from "glue.slint";
+import { LogItem-Data } from "app/screens/serial/logtable.slint";
+
+export global State {
+
+    // Statusbar
+    in-out property <string> message: "Statusbar";
+
+    // Connect tools
+    in-out property <bool> connected <=> Glue.app-connected;
+    pure callback refresh-ports <=> Glue.refresh-ports;
+    pure callback connect <=> Glue.connect;
+    pure callback disconnect <=> Glue.disconnect;
+
+    // Logs tools
+    in-out property <int> active-screen: 1;
+    pure callback export <=> Glue.export;
+
+    // Logs screen
+    in-out property <[LogItem-Data]> logs;
+    callback send-serial-input <=> Glue.send-serial-input;
+}

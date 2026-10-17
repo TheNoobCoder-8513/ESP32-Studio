@@ -1,0 +1,17 @@
+import { LogItem-Data } from "app/screens/serial/logtable.slint";
+
+export global Glue {
+    // app status
+    in-out property <bool> app-connected: false;
+
+    // refreshes the ports
+    pure callback refresh-ports() -> [string];
+    pure callback connect(string, string);
+    pure callback disconnect();
+
+    // Exports the logs
+    pure callback export([LogItem-Data]);
+
+    // Sends serial input 
+    callback send-serial-input(string);
+}

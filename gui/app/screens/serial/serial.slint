@@ -1,0 +1,19 @@
+import { Theme } from "../../theme.slint";
+import { Screen, Panel, HL, VL } from "../../widget.slint";
+import { LogTable } from "logtable.slint";
+import { State } from "../../../state.slint";
+import { LineEdit } from "std-widgets.slint";
+import { Serial-Input } from "serialinput.slint";
+
+
+export component Serial inherits Rectangle {
+    VL {
+        padding: 0px;
+
+        LogTable {
+            logs: State.logs;
+        }
+
+        Serial-Input { }
+    }
+}

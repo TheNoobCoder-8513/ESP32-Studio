@@ -1,0 +1,27 @@
+import { Logs-Tools, Connect-Tools, Toolbar } from "widget.slint";
+import { State } from "../state.slint";
+
+export component Topbar inherits Toolbar {
+    property <[string]> screens: ["Home", "Logs", "Chart", "Connections", "Help", "Settings"];
+    title: screens[State.active-screen];
+
+    if State.active-screen == 1: Logs-Tools {
+        export => {
+            State.export(State.logs);
+        }
+        clear => {
+            State.logs = [];
+        }
+    }
+
+    Connect-Tools {
+        connected <=> State.connected;
+        refresh => State.refresh-ports();
+        connect(port, baud) => {
+            State.connect(port, baud);
+        }
+        disconnect => {
+            State.disconnect();
+        }
+    }
+}

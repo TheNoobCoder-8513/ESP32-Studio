@@ -1,0 +1,41 @@
+import { Theme } from "../theme.slint";
+import { Panel } from "widget.slint";
+import { State } from "../state.slint";
+import { State } from "../state.slint";
+
+
+
+export component Statusbar inherits Panel {
+    height: 32px;
+
+    timer := Timer {
+        interval: 5s;
+        running: false;
+
+        triggered => {
+            State.message = "";
+            timer.running = false;
+            timer.stop();
+        }
+    }
+
+    HorizontalLayout {
+        padding-left: 10px;
+        padding-right: 10px;
+
+        status-text := Text {
+            horizontal-stretch: 1;
+            vertical-alignment: center;
+            text: State.message;
+            font-size: 13px;
+            color: Theme.fg-c.surface;
+
+            changed text => {
+                if (State.message != "") {
+                    timer.running = true;
+                    timer.restart();
+                }
+            }
+        }
+    }
+}

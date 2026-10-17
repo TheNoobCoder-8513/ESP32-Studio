@@ -1,0 +1,170 @@
+import { Theme } from "../theme.slint";
+import { Panel, VL, HL } from "panel.slint";
+import { Combo, Icon-Button } from "input.slint";
+import { Toolbar-Group } from "other.slint";
+
+
+export component Logs-Tools inherits HorizontalLayout {
+    property <bool> recording;
+    property <bool> recorded;
+
+    callback export();
+    callback clear();
+
+    spacing: Theme.gap-s.base;
+
+    Toolbar-Group {
+        Icon-Button {
+            icon: root.recording ? @image-url("../icons/circle-pause.svg") : @image-url("../icons/circle-dot.svg");
+            clicked => {
+                if (!root.recorded && root.recording) { root.recorded = true; }
+                root.recording = !root.recording;
+            }
+        }
+
+        Icon-Button {
+            enabled: root.recorded || root.recording;
+            icon: @image-url("../icons/square.svg");
+            clicked => {
+                root.recorded = true;
+                root.recording = false;
+            }
+        }
+    }
+
+    Toolbar-Group {
+        Icon-Button {
+            enabled: root.recorded;
+            icon: @image-url("../icons/download.svg");
+            clicked => {
+                root.export();
+            }
+        }
+
+        Icon-Button {
+            enabled: root.recorded;
+            icon: @image-url("../icons/trash.svg");
+            clicked => {
+                root.clear();
+                root.recorded = false;
+            }
+        }
+    }
+}
+
+
+export component Connect-Tools inherits HorizontalLayout {
+
+    pure callback refresh() -> [string];
+    callback connect(string, string);
+    callback disconnect();
+
+    in-out property <bool> connected;
+    property <[string]> ports: refresh();
+    property <[string]> bauds: [
+        "4800",
+        "9600",
+        "19200",
+        "57600",
+        "115200",
+    ];
+
+    spacing: Theme.gap-s.base;
+
+    Toolbar-Group {
+        Icon-Button {
+            enabled: !connected;
+            icon: @image-url("../icons/scan-square.svg");
+            clicked => { root.refresh(); }
+        }
+
+        port := Combo {
+            enabled: !connected;
+            values: refresh();
+        }
+    }
+
+    Toolbar-Group {
+        baud := Combo {
+            enabled: !connected;
+            values: bauds;
+        }
+    }
+
+    Toolbar-Group {
+        Icon-Button {
+            icon: root.connected ? @image-url("../icons/power.svg") : @image-url("../icons/plug.svg");
+
+            clicked => {
+                let api = port.selected-index;
+                let abi = baud.selected-index;
+
+                if (root.connected) {
+                    if (api >= 0 || abi >= 0) {
+                        root.connect(ports[port.selected-index], bauds[baud.selected-index]);
+                        root.connected = !root.connected;
+                    }
+                } else {
+                    root.disconnect();
+                }
+            }
+        }
+    }
+}
+
+
+
+export component Toolbar-Heading inherits Panel {
+    in property <string> title;
+
+    HL {
+        alignment: start;
+        padding-left: Theme.gap-s.base * 2;
+
+        Text {
+            text: root.title;
+            horizontal-alignment: center;
+            vertical-alignment: center;
+            font-size: Theme.font-s.large;
+            color: Theme.fg-c.page;
+        }
+    }
+}
+
+export component ToolButton inherits Rectangle {
+    in property <image> icon;
+
+    background: Theme.bg.surface;
+    border-radius: Theme.bor-r.base;
+    height: 50px;
+    width: self.height;
+
+    touch := TouchArea { }
+
+    Image {
+        source: root.icon;
+        colorize: Theme.fg-c.base;
+    }
+}
+
+export component Toolbar {
+    height: 50px;
+
+    in property <string> title: "Toolbar";
+
+    HorizontalLayout {
+        spacing: Theme.gap-s.norm;
+
+        Toolbar-Heading {
+            horizontal-stretch: 1;
+            title: root.title;
+        }
+
+        HorizontalLayout {
+            horizontal-stretch: 0;
+            spacing: Theme.gap-s.norm;
+
+            @children
+        }
+    }
+}

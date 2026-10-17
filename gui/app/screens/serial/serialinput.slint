@@ -1,0 +1,37 @@
+import { Theme } from "../../theme.slint";
+import { TextEdit } from "std-widgets.slint";
+import {
+    Icon-Button,
+    Btn-Wrapper,
+    Panel,
+    Toolbar-Group,
+} from "../../widget.slint";
+import { State } from "../../../state.slint";
+
+export component Serial-Input inherits HorizontalLayout {
+    spacing: Theme.gap-s.base;
+
+    Toolbar-Group {
+        input := TextEdit {
+            placeholder-text: "Add input to serial.";
+        }
+
+        Icon-Button {
+            enabled: !input.text.is-empty;
+            icon: @image-url("../../icons/x.svg");
+            clicked => {
+                input.text = "";
+                input.clear-focus();
+            }
+        }
+    }
+
+    Btn-Wrapper {
+        Icon-Button {
+            icon: @image-url("../../icons/send-horizontal.svg");
+            clicked => {
+                State.send-serial-input(input.text);
+            }
+        }
+    }
+}

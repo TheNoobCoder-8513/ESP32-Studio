@@ -1,0 +1,18 @@
+import { Theme } from "../theme.slint";
+
+export component Panel inherits Rectangle {
+    background: Theme.bg.surface;
+    border-width: 1px;
+    border-color: Theme.bor-c.surface;
+    border-radius: Theme.bor-r.base;
+}
+
+export component HL inherits HorizontalLayout {
+    spacing: Theme.gap-s.base;
+    padding: Theme.gap-s.base;
+}
+
+export component VL inherits VerticalLayout {
+    spacing: Theme.gap-s.base;
+    padding: Theme.gap-s.base;
+}

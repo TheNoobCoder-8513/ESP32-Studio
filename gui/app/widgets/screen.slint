@@ -1,0 +1,16 @@
+import { Theme } from "../theme.slint";
+import { VL } from "panel.slint";
+
+
+export component Screen inherits Rectangle {
+    in property <string> screen-title;
+
+    VL {
+        padding: 0px;
+
+        VerticalLayout {
+            spacing: Theme.gap-s.base;
+            @children
+        }
+    }
+}

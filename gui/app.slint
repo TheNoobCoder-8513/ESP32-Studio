@@ -1,0 +1,53 @@
+import { Theme } from "theme.slint";
+import {
+    HL,
+    VL,
+    Panel,
+} from "app/widget.slint";
+import { Navbar } from "app/navbar.slint";
+import { Statusbar } from "app/statusbar.slint";
+import { Home, Serial } from "app/screens.slint";
+import { Glue } from "glue.slint";
+import { State } from "state.slint";
+import { Logs-Tools, Connect-Tools } from "app/widgets/toolbar.slint";
+import { Topbar } from "app/topbar.slint";
+
+export { AppWindow, Glue }
+
+// Entry point
+component AppWindow inherits Window {
+    title: "Garden";
+
+    min-height: 720px;
+    min-width: 1280px;
+
+    default-font-size: Theme.font-s.base;
+    background: Theme.bg.page;
+
+    GridLayout {
+        spacing: Theme.gap-s.base;
+        padding: self.spacing;
+
+        Navbar {
+            row: 0;
+            col: 0;
+        }
+
+        VerticalLayout {
+            spacing: Theme.gap-s.base;
+
+            Topbar { }
+
+            Rectangle {
+                if State.active-screen == 0: Home { }
+                if State.active-screen == 1: Serial { }
+                if State.active-screen >= 2: Panel { }
+            }
+        }
+
+        Statusbar {
+            row: 1;
+            colspan: 2;
+        }
+    }
+}

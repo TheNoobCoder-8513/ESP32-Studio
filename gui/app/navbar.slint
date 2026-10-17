@@ -1,0 +1,63 @@
+import { Theme } from "../theme.slint";
+import {
+    Panel,
+    VL,
+    HL,
+    Toolbar-Group,
+    Icon-Button,
+    Toolbar-Group,
+} from "widget.slint";
+import { State } from "../state.slint";
+
+
+
+
+
+export component Navbar {
+    property <int> active <=> State.active-screen;
+
+    width: 50px;
+
+    VerticalLayout {
+        spacing: Theme.gap-s.base;
+
+        Toolbar-Group {
+            Icon-Button {
+                enabled: false;
+                icon: @image-url("icons/stone.svg");
+            }
+        }
+
+        property <[{ title: string, icon: image }]> meta: [
+            { title: "Home", icon:@image-url("icons/house.svg") },
+            { title: "Serial Monitor", icon:@image-url("icons/tv.svg") },
+            { title: "Analog", icon:@image-url("icons/chart-no-axes-column.svg") },
+            { title: "Connection", icon:@image-url("icons/cable.svg") },
+            { title: "Help", icon:@image-url("icons/circle-question-mark.svg") }
+        ];
+
+        for elem[index] in meta: Toolbar-Group {
+            Icon-Button {
+                // title: elem.title;
+                icon: elem.icon;
+                accented: index == active;
+                clicked => {
+                    root.active = index;
+                }
+            }
+        }
+
+        Panel { }
+
+        Toolbar-Group {
+            Icon-Button {
+                // title: "Settings";
+                icon: @image-url("icons/settings.svg");
+                accented: active == 5;
+                clicked => {
+                    root.active = 5;
+                }
+            }
+        }
+    }
+}

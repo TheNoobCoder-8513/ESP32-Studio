@@ -1,0 +1,18 @@
+export struct Bg-Color { base: color, page: color, surface: color, highlight: color }
+export struct Fg-Color { base: color, page: color, surface: color, highlight: color }
+
+export struct Bor-Radius { base: length, norm: length, mid: length, large: length }
+export struct Bor-Color { base: color, page: color, surface: color, highlight: color }
+
+export struct Gap-Size { base: length, norm: length, mid: length, large: length }
+export struct Font-Size { base: length, norm: length, mid: length, large: length }
+
+
+export struct Style-Preset {
+    bg-c: Bg-Color,
+    fg-c: Fg-Color,
+    bor-r: Bor-Radius,
+    bor-c: Bor-Color,
+    gap-s: Gap-Size,
+    font-s: Font-Size
+}

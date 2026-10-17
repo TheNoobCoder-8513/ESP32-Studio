@@ -1,0 +1,82 @@
+import {
+    Bg-Color,
+    Fg-Color,
+    Bor-Radius,
+    Gap-Size,
+    Font-Size,
+    Bor-Color,
+} from "style.slint";
+import { Style-Preset } from "style.slint";
+
+enum Active-Style { Light, Dark }
+
+export global Theme {
+    property <{ bor-r: Bor-Radius, bor-c: Bor-Color, gap-s: Gap-Size, font-s: Font-Size }> commons: {
+        bor-r: { base: 5px, norm: 8px, mid: 12px, large: 15px },
+        bor-c: { base: #383838, page: #565656, surface: #0000, highlight: #0000 },
+        gap-s: { base: 5px, norm: 10px, mid: 20px, large: 80px },
+        font-s: { base: 12px, norm: 14px, mid: 16px, large: 20px }
+    };
+
+    // property <Style-Preset> light-style: {
+    //     bg-c: { base: #f3f4f6, page: #ffffff, surface: #f9fafb, highlight: #2563eb },
+    //     fg-c: { base: #1f2937, page: #111827, surface: #374151, highlight: #ffffff },
+    //     gap-s: root.commons.gap-s,
+    //     bor-r: root.commons.bor-r,
+    //     bor-c: root.commons.bor-c,
+    //     font-s: root.commons.font-s
+    // };
+
+    // property <Style-Preset> dark-style: {
+    //     bg-c: { base: #111827, page: #1f2937, surface: #374151, highlight: #3b82f6 },
+    //     fg-c: { base: #9ca3af, page: #f9fafb, surface: #f3f4f6, highlight: #ffffff },
+    //     gap-s: root.commons.gap-s,
+    //     bor-r: root.commons.bor-r,
+    //     bor-c: root.commons.bor-c,
+    //     font-s: root.commons.font-s
+    // };
+
+    // property <[Style-Preset]> styles: [light-style, dark-style];
+
+    property <[Style-Preset]> styles: [
+        {   // Light Theme
+            bg-c: { base: #f3f4f6, page: #ffffff, surface: #f0f0f0, highlight: #2563eb },
+            fg-c: { base: #1f2937, page: #111827, surface: #374151, highlight: #ffffff },
+            gap-s: root.commons.gap-s,
+            bor-r: root.commons.bor-r,
+            bor-c: root.commons.bor-c,
+            font-s: root.commons.font-s
+        },
+        {   // Dark Theme
+            bg-c: { base: #1a1a1a, page: #000000, surface: #1a1a1a, highlight: #0d0d0d },
+            fg-c: { base: #787878, page: #9a9a9a, surface: #d2d2d2, highlight: #ffffff },
+            gap-s: root.commons.gap-s,
+            bor-r: root.commons.bor-r,
+            bor-c: root.commons.bor-c,
+            font-s: root.commons.font-s
+        }
+    ];
+
+    function get-active-style-index() -> int {
+        let input = active-style;
+
+        if (input == Active-Style.Light) { return 0; }
+        else if (input == Active-Style.Dark) { return 1; }
+        return 0;
+    }
+
+    property <Active-Style> active-style: Active-Style.Dark;
+    property <Style-Preset> active-style-preset: styles[get-active-style-index()];
+
+    // To allow Theme.attrib syntax
+    out property <Bg-Color> bg: active-style-preset.bg-c;
+    out property <Fg-Color> fg-c: active-style-preset.fg-c;
+
+    out property <Bor-Radius> bor-r: active-style-preset.bor-r;
+    out property <Bor-Color> bor-c: active-style-preset.bor-c;
+
+    out property <Gap-Size> gap-s: active-style-preset.gap-s;
+    out property <Font-Size> font-s: active-style-preset.font-s;
+
+    out property <color> accent: #1071d8;
+}

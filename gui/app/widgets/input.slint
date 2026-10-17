@@ -1,0 +1,170 @@
+import { Theme } from "../../theme.slint";
+import { Panel, HL, VL } from "panel.slint";
+import { ListView } from "std-widgets.slint";
+
+export component Combo-Button inherits Panel {
+    in property <string> text: "Button";
+
+    callback clicked();
+
+    height: 40px;
+
+    touch := TouchArea {
+        clicked => { root.clicked(); }
+    }
+
+    HL {
+        padding: Theme.gap-s.norm;
+        Text {
+            text: root.text;
+            font-size: Theme.font-s.mid;
+            color: Theme.fg-c.surface;
+        }
+    }
+
+    states [
+        clicked when touch.pressed: {
+            background: Theme.bg.highlight;
+        }
+        hovered when touch.has-hover: {
+            background: Theme.bg.surface;
+            border-width: 1px;
+            border-color: Theme.bor-c.page;
+        }
+    ]
+}
+
+export component Combo inherits Panel {
+
+    in property <[string]> values;
+    in-out property <int> selected-index: root.values.length > 0 ? 0 : -1;
+    in property <bool> enabled: true;
+
+    callback selected(int);
+
+    background: Theme.bg.page;
+    border-color: {
+        if (touch.has-hover || popup.is-open) { Theme.bor-c.page } else { transparent }
+    }
+
+    touch := TouchArea {
+        clicked => {
+            if (root.enabled && values.length > 0) {
+                if (!popup.is-open) { popup.show(); }
+                else { popup.close(); }
+            }
+        }
+    }
+
+    states [
+        disabled when !root.enabled: {
+            border-width: 1px;
+            background: Theme.bg.base;
+            border-color: Theme.bor-c.base;
+        }
+    ]
+
+    lt := HL {
+        cross-axis-alignment: center;
+        padding: Theme.gap-s.norm;
+        spacing: Theme.gap-s.base;
+
+        Text {
+            font-size: Theme.font-s.mid;
+            text: selected-index >= 0 ? values[selected-index] : "None";
+            color: Theme.fg-c.surface;
+        }
+
+        Image {
+            height: 20px;
+            width: self.height;
+            source: popup.is-open ? @image-url("../icons/chevron-up.svg") : @image-url("../icons/chevron-down.svg");
+            colorize: Theme.fg-c.surface;
+        }
+    }
+
+    popup := PopupWindow {
+        width: 200px;
+        close-policy: close-on-click-outside;
+        height: Math.min(160px, list.max-height);
+
+        x: -self.width + lt.width;
+        y: lt.height;
+
+        list := Panel {
+            width: 100%;
+            background: Theme.bg.page;
+
+            VL {
+                Flickable {
+                    VL {
+                        padding: 0px;
+                        for elem[index] in values: Combo-Button {
+                            text: elem;
+
+                            clicked => {
+                                if (root.selected-index != index) {
+                                    root.selected-index = index;
+                                    root.selected(root.selected-index);
+                                }
+                                popup.close();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+    
+
+
+export component Icon-Button inherits Panel {
+    in property <image> icon;
+    in property <length> icon-size: self.height - 20px;
+
+    in property <bool> enabled: true;
+    in property <bool> accented: false;
+
+    height: 40px;
+    width: self.height;
+    background: Theme.bg.page;
+
+    callback clicked();
+
+    touch := TouchArea {
+        enabled: root.enabled;
+        clicked => {
+            if (root.enabled) {
+                root.clicked();
+            }
+        }
+    }
+
+    HL {
+        alignment: center;
+        cross-axis-alignment: center;
+
+        Image {
+            height: Math.max(20px, icon-size);
+            width: self.height;
+            source: root.icon;
+            colorize: accented ? Theme.accent : Theme.fg-c.page;
+        }
+    }
+
+    states [
+        disabled when !root.enabled: {
+            border-width: 1px;
+            background: Theme.bg.base;
+            border-color: Theme.bor-c.base;
+        }
+        clicked when touch.pressed: {
+            background: Theme.bg.highlight;
+        }
+        hovered when touch.has-hover: {
+            border-width: 1px;
+            border-color: Theme.bor-c.page;
+        }
+    ]
+}
