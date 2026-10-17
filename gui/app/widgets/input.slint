@@ -125,11 +125,14 @@ export component Icon-Button inherits Panel {
 
     in property <bool> enabled: true;
     in property <bool> accented: false;
+    in property <string> tooltip;
+    in property <bool> tooltip-enabled;
 
     height: 40px;
     width: self.height;
     background: Theme.bg.page;
 
+    callback hovered();
     callback clicked();
 
     touch := TouchArea {
@@ -137,6 +140,11 @@ export component Icon-Button inherits Panel {
         clicked => {
             if (root.enabled) {
                 root.clicked();
+            }
+        }
+        changed has-hover => {
+            if (root.tooltip-enabled && touch.has-hover) {
+                hovered();
             }
         }
     }

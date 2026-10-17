@@ -4,7 +4,6 @@ import { State } from "../state.slint";
 import { State } from "../state.slint";
 
 
-
 export component Statusbar inherits Panel {
     height: 32px;
 
@@ -13,29 +12,54 @@ export component Statusbar inherits Panel {
         running: false;
 
         triggered => {
-            State.message = "";
+            State.tooltip = "Statusbar";
             timer.running = false;
             timer.stop();
         }
     }
 
     HorizontalLayout {
-        padding-left: 10px;
-        padding-right: 10px;
+        padding-left: Theme.gap-s.base;
+        padding-right: Theme.gap-s.base;
+        alignment: space-between;
 
-        status-text := Text {
-            horizontal-stretch: 1;
+        Text {
             vertical-alignment: center;
-            text: State.message;
-            font-size: 13px;
+            text: State.tooltip;
+            font-size: 14px;
             color: Theme.fg-c.surface;
 
             changed text => {
-                if (State.message != "") {
+                if (State.tooltip != "Statusbar") {
                     timer.running = true;
                     timer.restart();
                 }
             }
+        }
+
+        Text {
+            vertical-alignment: center;
+            text: State.status-message;
+            font-size: 18px;
+            color: Theme.fg-c.surface;
+
+            changed text => {
+                if (State.tooltip != "") {
+                    timer.running = true;
+                    timer.restart();
+                }
+            }
+
+            states [
+                disconnected when self.text == "Disconnected": {
+                    color: #bb1212;
+                    font-weight: 900;
+                }
+                connected when self.text == "Connected": {
+                    color: #19c233;
+                    font-weight: 900;
+                }
+            ]
         }
     }
 }

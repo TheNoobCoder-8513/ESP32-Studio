@@ -31,6 +31,7 @@ export component Serial-Input inherits HorizontalLayout {
             icon: @image-url("../../icons/send-horizontal.svg");
             clicked => {
                 State.send-serial-input(input.text);
+                input.text = "";
             }
         }
     }

@@ -4,7 +4,8 @@ import { LogItem-Data } from "app/screens/serial/logtable.slint";
 export global State {
 
     // Statusbar
-    in-out property <string> message: "Statusbar";
+    in-out property <string> tooltip: "Statusbar";
+    in-out property <string> status-message: connected ? "Connected" : "Disconnected";
 
     // Connect tools
     in-out property <bool> connected <=> Glue.app-connected;
@@ -13,10 +14,13 @@ export global State {
     pure callback disconnect <=> Glue.disconnect;
 
     // Logs tools
-    in-out property <int> active-screen: 1;
+    in-out property <int> active-screen;
     pure callback export <=> Glue.export;
 
+    // ESP screen
+    pure callback change-pin <=> Glue.change-pin;
+
     // Logs screen
-    in-out property <[LogItem-Data]> logs;
+    in-out property <[LogItem-Data]> logs <=> Glue.logs;
     callback send-serial-input <=> Glue.send-serial-input;
 }

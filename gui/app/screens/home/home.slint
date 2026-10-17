@@ -1,6 +1,7 @@
 import { Theme } from "../../theme.slint";
 import { Screen, Panel, HL, VL } from "../../widget.slint";
-import { Glue } from "../../../glue.slint";
+import { State } from "../../../state.slint";
+import { Empty } from "emptyhome.slint";
 
 export struct PinDef {
     labels: [string],
@@ -169,7 +170,7 @@ component Esp32 {
 
                 clicked(status) => {
                     if (left[index].enabled && left[index].gpio >= 0) {
-                        // Glue.change_pin(left[index].gpio, status);
+                        State.change-pin(left[index].gpio, status);
                     }
                 }
             }
@@ -187,7 +188,7 @@ component Esp32 {
 
                 clicked(status) => {
                     if (right[index].enabled && right[index].gpio >= 0) {
-                        // Glue.change_pin(right[index].gpio, status);
+                        State.change-pin(right[index].gpio, status);
                     }
                 }
             }
@@ -195,13 +196,13 @@ component Esp32 {
     }
 }
 
-export component Home inherits Panel {
+export component Home inherits Rectangle {
 
     Panel {
-        VL {
-            cross-axis-alignment: center;
-            alignment: center;
-            Esp32 { }
-        }
+        background: transparent;
+        
+        if State.connected: Esp32 { }
+
+        if !State.connected: Empty {}
     }
 }

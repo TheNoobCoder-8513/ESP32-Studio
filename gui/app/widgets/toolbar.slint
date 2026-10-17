@@ -75,12 +75,12 @@ export component Connect-Tools inherits HorizontalLayout {
         Icon-Button {
             enabled: !connected;
             icon: @image-url("../icons/scan-square.svg");
-            clicked => { root.refresh(); }
+            clicked => { root.ports = root.refresh(); }
         }
 
         port := Combo {
             enabled: !connected;
-            values: refresh();
+            values: root.ports;
         }
     }
 
@@ -93,16 +93,16 @@ export component Connect-Tools inherits HorizontalLayout {
 
     Toolbar-Group {
         Icon-Button {
+            enabled: port.selected-index >= 0 && baud.selected-index >= 0 && root.ports.length > 0;
             icon: root.connected ? @image-url("../icons/power.svg") : @image-url("../icons/plug.svg");
 
             clicked => {
                 let api = port.selected-index;
                 let abi = baud.selected-index;
 
-                if (root.connected) {
-                    if (api >= 0 || abi >= 0) {
-                        root.connect(ports[port.selected-index], bauds[baud.selected-index]);
-                        root.connected = !root.connected;
+                if (!root.connected) {
+                    if (api >= 0 && abi >= 0 && root.ports.length > 0) {
+                        root.connect(root.ports[api], root.bauds[abi]);
                     }
                 } else {
                     root.disconnect();

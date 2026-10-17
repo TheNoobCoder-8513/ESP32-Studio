@@ -28,21 +28,39 @@ export component Navbar {
             }
         }
 
-        property <[{ title: string, icon: image }]> meta: [
-            { title: "Home", icon:@image-url("icons/house.svg") },
-            { title: "Serial Monitor", icon:@image-url("icons/tv.svg") },
-            { title: "Analog", icon:@image-url("icons/chart-no-axes-column.svg") },
-            { title: "Connection", icon:@image-url("icons/cable.svg") },
-            { title: "Help", icon:@image-url("icons/circle-question-mark.svg") }
+        property <[{ tooltip: string, icon: image }]> meta: [
+            {
+                tooltip: "Manage and preview the ESP in a glance",
+                icon:@image-url("icons/house.svg")
+            },
+            { tooltip: "Logs the serial output from ESP", icon:@image-url("icons/tv.svg") },
+            {
+                tooltip: "Track the analog changes within ESP",
+                icon:@image-url("icons/chart-no-axes-column.svg")
+            },
+            { tooltip: "View exported data", icon:@image-url("icons/cable.svg") },
+            {
+                tooltip: "Need some help ? Here it might be available.",
+                icon:@image-url("icons/circle-question-mark.svg")
+            }
         ];
 
         for elem[index] in meta: Toolbar-Group {
             Icon-Button {
-                // title: elem.title;
                 icon: elem.icon;
                 accented: index == active;
+                tooltip-enabled: true;
+                enabled: {
+                    if index == 0 { true }
+                    else if (State.connected) { true } else { false }
+                }
+                hovered => {
+                    State.tooltip = elem.tooltip;
+                }
                 clicked => {
-                    root.active = index;
+                    if (State.connected) {
+                        root.active = index;
+                    }
                 }
             }
         }
@@ -51,7 +69,8 @@ export component Navbar {
 
         Toolbar-Group {
             Icon-Button {
-                // title: "Settings";
+                tooltip-enabled: true;
+                tooltip: "Tweak application settings and preferences";
                 icon: @image-url("icons/settings.svg");
                 accented: active == 5;
                 clicked => {

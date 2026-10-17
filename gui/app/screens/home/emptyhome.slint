@@ -1,0 +1,52 @@
+import { Panel, VL, HL } from "../../widget.slint";
+import { Theme } from "../../theme.slint";
+
+export component Empty inherits Rectangle {
+    Text {
+        x: parent.width - self.width;
+        y: 0;
+        text: "Begin by connecting ESP here";
+        color: Theme.fg-c.surface;
+        font-size: Theme.font-s.mid;
+    }
+
+    VerticalLayout {
+        x: img.x - self.width - 20px;
+        y: img.y;
+        alignment: start;
+        property <[string]> texts: [
+            "Plug ESP via USB",
+            "Refresh the available COM ports",
+            "Select the desired COM port in toolbar",
+            "Choose the baud rate",
+            "Hit Connect"
+        ];
+
+        for elem in texts: Text {
+            color: Theme.fg-c.page;
+            font-size: Theme.font-s.large;
+            text: elem;
+            horizontal-alignment: right;
+        }
+    }
+
+    HL {
+        alignment: center;
+        cross-axis-alignment: center;
+        spacing: Theme.gap-s.large;
+
+        img := Image {
+            width: 200px;
+            opacity: 0.6;
+            source: @image-url("esp-nodemcu-devkit-v1.png");
+        }
+    }
+
+    Text {
+        x: img.x + img.width + 10px;
+        y: img.y + img.height - self.height;
+        text: "ESP\nStudio";
+        font-size: 60px;
+        color: Theme.fg-c.surface;
+    }
+}
