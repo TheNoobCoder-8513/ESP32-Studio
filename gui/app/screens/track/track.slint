@@ -1,11 +1,52 @@
-import { Panel, HL } from "../../widget.slint";
+import { Panel, HL, Check-Button } from "../../widget.slint";
 import { Chart } from "chart.slint";
-import { Tracker } from "tracker.slint";
+import {
+    Track-List,
+    Track-Item,
+    Pin-Track-Def,
+    Track-Val,
+} from "tracker.slint";
+import { State } from "../../../state.slint";
 
 
 export component Track inherits HL {
+    property <int> active: 0;
+    property <[Pin-Track-Def]> pins-status <=> State.pin-track-status;
+
     padding: 0px;
-    Tracker { }
+    Track-List {
+        pins <=> root.pins-status;
+
+        for item[index] in self.pins: Track-Item {
+            title: "Pin  " + item.gpio;
+
+            status: item.active;
+
+            track => {
+                item.active = true;
+                root.active += 1;
+            }
+            untrack => {
+                item.active = false;
+                root.active -= 1;
+            }
+        }
+    }
 
     Chart { }
+
+    if active > 0: Flickable {
+        width: 200px;
+
+        VerticalLayout {
+            alignment: start;
+
+            for item[index] in root.pins-status: VerticalLayout {
+                if item.active: Track-Val {
+                    label: "Pin" + item.gpio;
+                    value: "0";
+                }
+            }
+        }
+    }
 }

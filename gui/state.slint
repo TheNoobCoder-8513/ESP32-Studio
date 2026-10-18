@@ -2,6 +2,9 @@ import { Glue } from "glue.slint";
 
 import { Serial-Data } from "app/screens/serial/serialtable.slint";
 import { Log-Data } from "app/screens/logs/logtable.slint";
+import {Pin-Track-Def} from "app/screens/track/tracker.slint";
+
+
 
 export global State {
 
@@ -45,4 +48,48 @@ export global State {
 
     // Logs screen
     in-out property <[Log-Data]> all-logs <=> Glue.logs;
+
+    // Track screen
+    in-out property <[Pin-Track-Def]> pin-track-status: [
+        { labels: ["EN"], gpio: -1, enabled: false, active: false },
+        { labels: ["SensVP", "ADC1_0", "GPIO36"], gpio: 36, enabled: false, active: false },
+        { labels: ["SensVN", "ADC1_3", "GPIO39"], gpio: 39, enabled: false, active: false },
+        { labels: ["ADC1_6", "GPIO34"], gpio: 34, enabled: false, active: false },
+        { labels: ["ADC1_7", "GPIO35"], gpio: 35, enabled: false, active: false },
+        { labels: ["XTAL32", "Touch9", "ADC1_4", "GPIO32"], gpio: 32, enabled: true, active: false },
+        { labels: ["XTAL32", "Touch8", "ADC1_5", "GPIO33"], gpio: 33, enabled: true, active: false },
+        { labels: ["DAC1", "ADC2_8", "GPIO25"], gpio: 25, enabled: true, active: false },
+        { labels: ["DAC2", "ADC2_9", "GPIO26"], gpio: 26, enabled: true, active: false },
+        { labels: ["Touch7", "ADC2_7", "GPIO27"], gpio: 27, enabled: true },
+        { labels: ["HSPI_CLK", "Touch6", "ADC2_6", "GPIO14"], gpio: 14, enabled: true, active: false },
+        {
+            labels: ["HSPI_MISO", "Touch5", "ADC2_5", "GPIO12"],
+            gpio: 12,
+            enabled: true,
+            active: false
+        },
+        {
+            labels: ["HSPI_MOSI", "Touch4", "ADC2_4", "GPIO13"],
+            gpio: 13,
+            enabled: true,
+            active: false
+        },
+        { labels: ["GND"], gpio: -1, enabled: false, active: false },
+        { labels: ["VIN"], gpio: -1, enabled: false, active: false },
+        { labels: ["GPIO23", "MOSI", "VSPI_MOSI"], gpio: 23, enabled: true, active: false },
+        { labels: ["GPIO22", "SCL"], gpio: 22, enabled: true, active: false },
+        { labels: ["GPIO1", "U0_TXD", "CLK3"], gpio: 1, enabled: true, active: false },
+        { labels: ["GPIO3", "U0_RXD", "CLK2"], gpio: 3, enabled: true, active: false },
+        { labels: ["GPIO21", "SDA"], gpio: 21, enabled: true, active: false },
+        { labels: ["GPIO19", "MISO", "VSPI_MISO"], gpio: 19, enabled: true, active: false },
+        { labels: ["GPIO18", "SCK", "VSPI_CLK"], gpio: 18, enabled: true, active: false },
+        { labels: ["GPIO5", "VSPI_CS"], gpio: 5, enabled: true, active: false },
+        { labels: ["GPIO17", "U2_TXD"], gpio: 17, enabled: true, active: false },
+        { labels: ["GPIO16", "U2_RXD"], gpio: 16, enabled: true, active: false },
+        { labels: ["GPIO4", "ADC2_0", "Touch0"], gpio: 4, enabled: true, active: false },
+        { labels: ["GPIO2", "ADC2_2", "Touch2", "CS"], gpio: 2, enabled: true, active: false },
+        { labels: ["GPIO15", "ADC2_3", "Touch3", "HSPI_CS"], gpio: 15, enabled: true, active: false },
+        { labels: ["GND"], gpio: -1, enabled: false },
+        { labels: ["3.3V"], gpio: -1, enabled: false, active: false }
+    ];
 }
