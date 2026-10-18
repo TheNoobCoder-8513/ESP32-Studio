@@ -1,16 +1,28 @@
-import { Logs-Tools, Connect-Tools, Toolbar } from "widget.slint";
+import { Serial-Tools, Connect-Tools, Toolbar } from "widget.slint";
 import { State } from "../state.slint";
+import { Logs-Tools } from "widgets/toolbar.slint";
 
 export component Topbar inherits Toolbar {
-    property <[string]> screens: ["Home", "Logs", "Chart", "Connections", "Help", "Settings"];
+    property <[string]> screens: ["Home", "Serial", "Track", "Logs", "Help", "Settings"];
     title: screens[State.active-screen];
 
-    if State.active-screen == 1: Logs-Tools {
+    if State.active-screen == 1: Serial-Tools {
         export => {
-            State.export(State.logs);
+            State.export(State.serial-logs);
         }
         clear => {
-            State.logs = [];
+            State.serial-logs = [];
+            State.clear-serial-logs();
+        }
+    }
+
+    if State.active-screen == 3: Logs-Tools { 
+        tele <=> State.tele;
+        inserial <=> State.inserial;
+        outserial <=> State.outserial;
+        clear => {
+            State.all-logs = [];
+            State.clear-all-logs();
         }
     }
 

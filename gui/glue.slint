@@ -1,23 +1,277 @@
-import { LogItem-Data } from "app/screens/serial/logtable.slint";
+import { Serial-Data } from "app/screens/serial/serialtable.slint";
+import { Log-Data } from "app/screens/logs/logtable.slint";
 
-export global Glue {
-    // app status
-    in-out property <bool> app-connected;
+export global Glue {    
 
-    // Logs
-    in-out property <[LogItem-Data]> logs;
-
-    // refreshes the ports
-    pure callback refresh-ports() -> [string];
+    // Home
     pure callback connect(string, string);
     pure callback disconnect();
-
-    // Hardware control
+    pure callback refresh-ports() -> [string];
     pure callback change-pin(int, bool);
+    in-out property <bool> app-connected;
 
-    // Exports the logs
-    pure callback export([LogItem-Data]);
-
-    // Sends serial input 
+    // Serial
+    pure callback clear-serial-output();
+    pure callback export-serial-output([Serial-Data]);
     callback send-serial-input(string);
+    in-out property <[Serial-Data]> serial-ouput: self.mock-serial-logs;
+
+    // Logs
+    pure callback clear-logs();
+    in-out property <[Log-Data]> logs: self.mock-all-logs;
+
+
+    /*
+
+        Mock Data
+
+    */
+    private property <[Log-Data]> mock-all-logs: [
+        {
+            date: "2026-10-18",
+            time: "08:00:01",
+            outflow: true,
+            is-tele: false,
+            log: "System initialized successfully."
+        },
+        {
+            date: "2026-10-18",
+            time: "08:05:12",
+            outflow: false,
+            is-tele: true,
+            log: "Incoming telemetry packet received."
+        },
+        {
+            date: "2026-10-18",
+            time: "08:12:45",
+            outflow: true,
+            is-tele: false,
+            log: "Data stream out to node 04."
+        },
+        {
+            date: "2026-10-18",
+            time: "08:20:03",
+            outflow: false,
+            is-tele: true,
+            log: "Heartbeat check passed."
+        },
+        {
+            date: "2026-10-18",
+            time: "08:35:50",
+            outflow: true,
+            is-tele: false,
+            log: "Cache synchronized with primary server."
+        },
+        {
+            date: "2026-10-18",
+            time: "08:42:15",
+            outflow: false,
+            is-tele: true,
+            log: "Sensor array reading normal."
+        },
+        {
+            date: "2026-10-18",
+            time: "08:50:22",
+            outflow: true,
+            is-tele: false,
+            log: "Outgoing payload dispatched."
+        },
+        {
+            date: "2026-10-18",
+            time: "09:01:05",
+            outflow: false,
+            is-tele: true,
+            log: "Telemetry link stable at 98%."
+        },
+        {
+            date: "2026-10-18",
+            time: "09:15:33",
+            outflow: true,
+            is-tele: false,
+            log: "Backup routine started."
+        },
+        {
+            date: "2026-10-18",
+            time: "09:18:40",
+            outflow: true,
+            is-tele: false,
+            log: "Backup routine completed."
+        },
+        {
+            date: "2026-10-18",
+            time: "09:30:11",
+            outflow: false,
+            is-tele: true,
+            log: "Diagnostic sweep initiated."
+        },
+        {
+            date: "2026-10-18",
+            time: "09:30:45",
+            outflow: false,
+            is-tele: true,
+            log: "Diagnostic sweep completed with 0 errors."
+        },
+        {
+            date: "2026-10-18",
+            time: "09:45:00",
+            outflow: true,
+            is-tele: false,
+            log: "Connection handshake sent."
+        },
+        {
+            date: "2026-10-18",
+            time: "09:45:02",
+            outflow: false,
+            is-tele: false,
+            log: "Connection acknowledged."
+        },
+        {
+            date: "2026-10-18",
+            time: "10:00:19",
+            outflow: true,
+            is-tele: true,
+            log: "Telemetry broadcast transmitted."
+        },
+        {
+            date: "2026-10-18",
+            time: "10:12:55",
+            outflow: false,
+            is-tele: true,
+            log: "Incoming feed buffer resized."
+        },
+        {
+            date: "2026-10-18",
+            time: "10:22:30",
+            outflow: true,
+            is-tele: false,
+            log: "Packet loss detected on channel 2."
+        },
+        {
+            date: "2026-10-18",
+            time: "10:22:35",
+            outflow: true,
+            is-tele: false,
+            log: "Retransmitting lost packet."
+        },
+        {
+            date: "2026-10-18",
+            time: "10:40:08",
+            outflow: false,
+            is-tele: true,
+            log: "Receiver lock acquired."
+        },
+        {
+            date: "2026-10-18",
+            time: "10:55:41",
+            outflow: true,
+            is-tele: false,
+            log: "Configuration file updated."
+        },
+        {
+            date: "2026-10-18",
+            time: "11:00:12",
+            outflow: false,
+            is-tele: true,
+            log: "Periodic status ping received."
+        },
+        {
+            date: "2026-10-18",
+            time: "11:14:20",
+            outflow: true,
+            is-tele: false,
+            log: "Query executed on database index."
+        },
+        {
+            date: "2026-10-18",
+            time: "11:25:50",
+            outflow: false,
+            is-tele: false,
+            log: "User session authenticated."
+        },
+        {
+            date: "2026-10-18",
+            time: "11:33:04",
+            outflow: true,
+            is-tele: true,
+            log: "Telemetry data batch 01 uploaded."
+        },
+        {
+            date: "2026-10-18",
+            time: "11:40:15",
+            outflow: true,
+            is-tele: true,
+            log: "Telemetry data batch 02 uploaded."
+        },
+        {
+            date: "2026-10-18",
+            time: "11:50:00",
+            outflow: false,
+            is-tele: false,
+            log: "Security sweep clear."
+        },
+        {
+            date: "2026-10-18",
+            time: "12:01:22",
+            outflow: true,
+            is-tele: false,
+            log: "Scheduled maintenance check."
+        },
+        {
+            date: "2026-10-18",
+            time: "12:15:10",
+            outflow: false,
+            is-tele: true,
+            log: "Low bandwidth warning cleared."
+        },
+        {
+            date: "2026-10-18",
+            time: "12:28:44",
+            outflow: true,
+            is-tele: false,
+            log: "Dispatching final queue elements."
+        },
+        {
+            date: "2026-10-18",
+            time: "12:30:00",
+            outflow: false,
+            is-tele: true,
+            log: "System operating at nominal parameters."
+        }
+    ];
+    private property <[Serial-Data]> mock-serial-logs: [
+        { date: "2026-10-18", time: "08:00:00", log: "COM3 opened at 115200 baud." },
+        { date: "2026-10-18", time: "08:01:15", log: "TX: AT+RESET" },
+        { date: "2026-10-18", time: "08:01:17", log: "RX: OK" },
+        { date: "2026-10-18", time: "08:05:22", log: "TX: AT+CWMODE=1" },
+        { date: "2026-10-18", time: "08:05:23", log: "RX: change success" },
+        { date: "2026-10-18", time: "08:10:40", log: "Sensor node 1 connected." },
+        { date: "2026-10-18", time: "08:12:00", log: "RX: DATA,VAL1=23.5,VAL2=1013" },
+        { date: "2026-10-18", time: "08:15:00", log: "RX: DATA,VAL1=23.7,VAL2=1014" },
+        { date: "2026-10-18", time: "08:18:30", log: "TX: PING" },
+        { date: "2026-10-18", time: "08:18:31", log: "RX: PONG (12ms)" },
+        { date: "2026-10-18", time: "08:25:05", log: "Buffer warning: 80% capacity reached." },
+        { date: "2026-10-18", time: "08:30:10", log: "RX: DATA,VAL1=24.1,VAL2=1012" },
+        { date: "2026-10-18", time: "08:35:12", log: "TX: REQ_CONFIG" },
+        { date: "2026-10-18", time: "08:35:14", log: "RX: CFG:ID=004,REV=2.1" },
+        { date: "2026-10-18", time: "08:40:00", log: "RX: DATA,VAL1=23.9,VAL2=1013" },
+        {
+            date: "2026-10-18",
+            time: "08:45:50",
+            log: "Warning: Voltage drop detected on line VCC."
+        },
+        { date: "2026-10-18", time: "08:50:00", log: "RX: DATA,VAL1=23.8,VAL2=1011" },
+        { date: "2026-10-18", time: "08:55:20", log: "TX: SET_INTERVAL=30s" },
+        { date: "2026-10-18", time: "08:55:21", log: "RX: ACK" },
+        { date: "2026-10-18", time: "09:00:00", log: "RX: DATA,VAL1=24.0,VAL2=1012" },
+        { date: "2026-10-18", time: "09:05:00", log: "RX: DATA,VAL1=24.2,VAL2=1014" },
+        { date: "2026-10-18", time: "09:10:15", log: "TX: STATUS" },
+        { date: "2026-10-18", time: "09:10:16", log: "RX: STATUS:OK,CPU=14%" },
+        { date: "2026-10-18", time: "09:15:00", log: "RX: DATA,VAL1=24.1,VAL2=1013" },
+        { date: "2026-10-18", time: "09:20:00", log: "RX: DATA,VAL1=24.3,VAL2=1015" },
+        { date: "2026-10-18", time: "09:25:40", log: "TX: DUMP_EEPROM" },
+        { date: "2026-10-18", time: "09:25:45", log: "RX: 0x00: FF 0A 3B 2C 88 EE" },
+        { date: "2026-10-18", time: "09:30:00", log: "RX: DATA,VAL1=24.0,VAL2=1012" },
+        { date: "2026-10-18", time: "09:35:10", log: "Checksum verified successfully." },
+        { date: "2026-10-18", time: "09:40:00", log: "RX: DATA,VAL1=23.9,VAL2=1013" }
+    ];
 }

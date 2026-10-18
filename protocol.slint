@@ -1,0 +1,32 @@
+enum PinKind { GPIO, ADC, Touch, EN, GND, VSPI, UART, v3-3, v5-0 }
+
+export struct PinData { //
+    pin-name: string,
+    pin-id: int,
+    status: bool,
+    supports: [PinKind],
+    mode: PinKind
+}
+
+export struct VarData {
+    var-name: string,
+    var-data: int,
+}
+
+export struct Telemetry {
+    device-name: string,
+    update-interval: int,
+    version: int,
+    pins-data: PinData,
+    vars-data: VarData 
+    //
+}
+
+enum Kind { Serial, Telemetry }
+
+export struct Protocol { //
+    telemetry: Kind,
+    serial: string,
+    telemetry: Telemetry
+}
+

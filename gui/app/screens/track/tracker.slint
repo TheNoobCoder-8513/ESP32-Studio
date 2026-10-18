@@ -1,0 +1,89 @@
+import { Panel, VL, HL, Check-Button } from "../../widget.slint";
+import { Theme } from "../../../theme.slint";
+
+
+export component Track-List {
+    in property <string> title: "Header";
+    in property <[string]> items;
+
+    VerticalLayout {
+        alignment: start;
+        spacing: Theme.gap-s.base;
+
+        Panel {
+            HL {
+                padding: Theme.gap-s.norm;
+                Text {
+                    text: root.title;
+                    font-size: Theme.font-s.mid;
+                    color: Theme.fg-c.page;
+                    font-weight: 900;
+                }
+            }
+        }
+
+        VerticalLayout {
+            spacing: Theme.gap-s.base;
+
+            for item[index] in root.items: Panel {
+                HL {
+                    cross-axis-alignment: center;
+                    padding-left: Theme.gap-s.norm;
+                    padding-right: self.padding-left;
+
+                    Text {
+                        text: item;
+                        font-size: Theme.font-s.mid;
+                        color: Theme.fg-c.surface;
+                        overflow: elide;
+                    }
+
+                    Check-Button {
+                        toggled => {
+                            if self.selected {
+                            } else {
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+export component Tracker {
+    in property <[{ title: string, variables: [string] }]> lists: [
+        { title: "Pins", variables:["MN 03", "CJK 1011"] },
+        {
+            title: "Variables",
+            variables:[
+                "MN 03",
+                "CJK 1011",
+                "MN 03",
+                "CJK 1011",
+                "MN 03",
+                "CJK 1011",
+                "MN 03",
+                "CJK 1011",
+                "MN 03",
+                "CJK 1011"
+            ]
+        },
+    ];
+
+    width: 200px;
+
+    Flickable {
+
+        VerticalLayout {
+            alignment: start;
+            spacing: Theme.gap-s.norm;
+
+            for list in lists: Track-List {
+                title: list.title;
+                items: list.variables;
+            }
+        }
+    }
+}

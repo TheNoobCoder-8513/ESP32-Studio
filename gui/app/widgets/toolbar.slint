@@ -4,53 +4,7 @@ import { Combo, Icon-Button } from "input.slint";
 import { Toolbar-Group } from "other.slint";
 
 
-export component Logs-Tools inherits HorizontalLayout {
-    property <bool> recording;
-    property <bool> recorded;
 
-    callback export();
-    callback clear();
-
-    spacing: Theme.gap-s.base;
-
-    Toolbar-Group {
-        Icon-Button {
-            icon: root.recording ? @image-url("../icons/circle-pause.svg") : @image-url("../icons/circle-dot.svg");
-            clicked => {
-                if (!root.recorded && root.recording) { root.recorded = true; }
-                root.recording = !root.recording;
-            }
-        }
-
-        Icon-Button {
-            enabled: root.recorded || root.recording;
-            icon: @image-url("../icons/square.svg");
-            clicked => {
-                root.recorded = true;
-                root.recording = false;
-            }
-        }
-    }
-
-    Toolbar-Group {
-        Icon-Button {
-            enabled: root.recorded;
-            icon: @image-url("../icons/download.svg");
-            clicked => {
-                root.export();
-            }
-        }
-
-        Icon-Button {
-            enabled: root.recorded;
-            icon: @image-url("../icons/trash.svg");
-            clicked => {
-                root.clear();
-                root.recorded = false;
-            }
-        }
-    }
-}
 
 
 export component Connect-Tools inherits HorizontalLayout {
@@ -112,6 +66,100 @@ export component Connect-Tools inherits HorizontalLayout {
     }
 }
 
+export component Serial-Tools inherits HorizontalLayout {
+    property <bool> recording;
+    property <bool> recorded;
+
+    callback export();
+    callback clear();
+
+    spacing: Theme.gap-s.base;
+
+    Toolbar-Group {
+        Icon-Button {
+            icon: root.recording ? @image-url("../icons/circle-pause.svg") : @image-url("../icons/circle-dot.svg");
+            clicked => {
+                if (!root.recorded && root.recording) { root.recorded = true; }
+                root.recording = !root.recording;
+            }
+        }
+
+        Icon-Button {
+            enabled: root.recorded || root.recording;
+            icon: @image-url("../icons/square.svg");
+            clicked => {
+                root.recorded = true;
+                root.recording = false;
+            }
+        }
+    }
+
+    Toolbar-Group {
+        Icon-Button {
+            enabled: root.recorded;
+            icon: @image-url("../icons/download.svg");
+            clicked => {
+                root.export();
+            }
+        }
+
+        Icon-Button {
+            enabled: root.recorded;
+            icon: @image-url("../icons/trash.svg");
+            clicked => {
+                root.clear();
+                root.recorded = false;
+            }
+        }
+    }
+}
+
+
+export component Logs-Tools inherits HorizontalLayout {
+    in-out property <bool> tele: true;
+    in-out property <bool> inserial: true;
+    in-out property <bool> outserial: true;
+
+    callback clear();
+
+    spacing: Theme.gap-s.base;
+
+    Toolbar-Group {
+        Icon-Button {
+            accented: root.tele;
+            icon: @image-url("../icons/robot-arm.svg");
+            clicked => {
+                root.tele = !root.tele;
+            }
+        }
+
+        Icon-Button {
+            accented: root.inserial;
+            icon: @image-url("../icons/download.svg");
+            clicked => {
+                root.inserial = !root.inserial;
+            }
+        }
+
+        Icon-Button {
+            accented: root.outserial;
+            icon: @image-url("../icons/upload.svg");
+            clicked => {
+                root.outserial = !root.outserial;
+            }
+        }
+    }
+
+    Toolbar-Group {
+
+        Icon-Button {
+            icon: @image-url("../icons/trash.svg");
+            clicked => {
+                root.clear();
+            }
+        }
+    }
+}
 
 
 export component Toolbar-Heading inherits Panel {
@@ -131,21 +179,6 @@ export component Toolbar-Heading inherits Panel {
     }
 }
 
-export component ToolButton inherits Rectangle {
-    in property <image> icon;
-
-    background: Theme.bg.surface;
-    border-radius: Theme.bor-r.base;
-    height: 50px;
-    width: self.height;
-
-    touch := TouchArea { }
-
-    Image {
-        source: root.icon;
-        colorize: Theme.fg-c.base;
-    }
-}
 
 export component Toolbar {
     height: 50px;

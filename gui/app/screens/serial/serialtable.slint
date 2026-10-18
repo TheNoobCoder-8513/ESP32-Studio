@@ -2,14 +2,14 @@ import { ListView } from "std-widgets.slint";
 import { VL, HL, Panel } from "../../widget.slint";
 import { Theme } from "../../theme.slint";
 
-export struct LogItem-Data {
+export struct Serial-Data {
     date: string,
     time: string,
     log: string,
 }
 
-component LogHeader inherits Rectangle {
-    in property <LogItem-Data> log;
+component SerialTable-Header inherits Rectangle {
+    in property <Serial-Data> log;
 
     VerticalLayout {
         Panel {
@@ -24,8 +24,8 @@ component LogHeader inherits Rectangle {
                      Theme.fg-c.base;
 
                 Text {
-                    width: 50px;
-                    text: root.log.time;
+                    width: 100px;
+                    text: root.log.date;
                     font-size: Theme.font-s.mid;
                     color: parent.text-color;
                     font-weight: 900;
@@ -33,9 +33,8 @@ component LogHeader inherits Rectangle {
 
                 Text {
                     width: 100px;
-                    text: root.log.date;
+                    text: root.log.time;
                     font-size: Theme.font-s.mid;
-                    horizontal-alignment: center;
                     color: parent.text-color;
                     font-weight: 900;
                 }
@@ -52,8 +51,8 @@ component LogHeader inherits Rectangle {
 }
 
 
-component LogItem inherits Panel {
-    in property <LogItem-Data> log;
+component Serial-Item inherits Panel {
+    in property <Serial-Data> log;
 
     HL {
         spacing: Theme.gap-s.norm;
@@ -61,17 +60,16 @@ component LogItem inherits Panel {
         padding-right: self.padding-left;
 
         Text {
-            width: 50px;
-            text: root.log.time;
+            width: 100px;
+            text: root.log.date;
             font-size: Theme.font-s.norm;
             color: Theme.fg-c.surface;
         }
 
         Text {
             width: 100px;
-            text: root.log.date;
+            text: root.log.time;
             font-size: Theme.font-s.norm;
-            horizontal-alignment: center;
             color: Theme.fg-c.surface;
         }
 
@@ -83,21 +81,21 @@ component LogItem inherits Panel {
     }
 }
 
-export component LogTable inherits Rectangle {
-    in property <[LogItem-Data]> logs;
-    property <LogItem-Data> column-headers: { date: "Date", time: "Time", log: "Log" };
+export component SerialTable inherits Rectangle {
+    in property <[Serial-Data]> logs;
+    property <Serial-Data> column-headers: { date: "Date", time: "Time", log: "Log" };
 
     VL {
         padding: 0px;
 
-        LogHeader {
+        SerialTable-Header {
             log: root.column-headers;
         }
 
         ListView {
 
-            for elem[index] in logs: HorizontalLayout {
-                LogItem {
+            for elem[index] in logs: VerticalLayout {
+                Serial-Item {
                     log: elem;
                 }
 

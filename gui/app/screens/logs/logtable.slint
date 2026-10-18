@@ -1,0 +1,197 @@
+import { ListView } from "std-widgets.slint";
+import { VL, HL, Panel } from "../../widget.slint";
+import { Theme } from "../../theme.slint";
+
+
+enum Pin-Kind { GPIO, ADC, Touch, EN, GND, VSPI, UART, v3-3, v5-0 }
+
+struct Pin-Data { //
+    pin-name: string,
+    pin-id: int,
+    status: bool,
+    supports: [Pin-Kind],
+    mode: Pin-Kind
+}
+
+export struct Var-Data {
+    var-name: string,
+    var-data: int,
+}
+
+export struct Telemetry-Data {
+    device-name: string,
+    update-interval: int,
+    version: int,
+    pins-data: Pin-Data,
+    vars-data: Var-Data,
+}
+
+enum Data-Kind { Serial, Telemetry }
+
+export struct Log-Data {
+    date: string,
+    time: string,
+    outflow: bool,
+    is-tele: bool,
+    log: string,
+}
+
+
+component Log-Header inherits Rectangle {
+    in property <[string]> columns;
+
+    VerticalLayout {
+        Panel {
+            HL {
+                spacing: Theme.gap-s.norm;
+                padding-left: Theme.gap-s.norm;
+                padding-right: self.padding-left;
+
+                cross-axis-alignment: center;
+
+                property <color> text-color: 
+                     Theme.fg-c.base;
+
+                Text {
+                    width: 100px;
+                    text: root.columns[0];
+                    font-size: Theme.font-s.mid;
+                    color: parent.text-color;
+                    font-weight: 900;
+                }
+
+                Text {
+                    width: 100px;
+                    text: root.columns[1];
+                    font-size: Theme.font-s.mid;
+                    color: parent.text-color;
+                    font-weight: 900;
+                }
+
+                Text {
+                    width: 100px;
+                    text: root.columns[2];
+                    font-size: Theme.font-s.mid;
+                    horizontal-alignment: center;
+                    color: parent.text-color;
+                    font-weight: 900;
+                }
+
+                spacer := Rectangle {
+                    width: 20px;
+                }
+
+                Text {
+                    text: root.columns[3];
+                    font-size: Theme.font-s.mid;
+                    color: parent.text-color;
+                    font-weight: 900;
+                }
+            }
+        }
+    }
+}
+
+
+component Log-Item inherits Panel {
+    in property <Log-Data> data;
+    callback clicked();
+
+    touch := TouchArea {
+        clicked => {
+            if data.is-tele {
+                root.clicked()
+            }
+        }
+    }
+
+    border-color: touch.has-hover && data.is-tele ? Theme.bor-c.base : transparent;
+    border-width: 1px;
+
+    HL {
+        spacing: Theme.gap-s.norm;
+        padding-left: Theme.gap-s.norm;
+        padding-right: self.padding-left;
+
+        Text {
+            width: 100px;
+            text: root.data.date;
+            font-size: Theme.font-s.norm;
+            color: Theme.fg-c.surface;
+        }
+
+        Text {
+            width: 100px;
+            text: root.data.time;
+            font-size: Theme.font-s.norm;
+            color: Theme.fg-c.surface;
+        }
+
+        Panel {
+            width: 100px;
+            background: {
+                if data.is-tele {
+                    #045100
+                } else if data.outflow {
+                    #350060
+                } else { #520054 }
+            }
+            Text {
+                text: data.is-tele ? "Telemetry" : "Serial";
+                font-size: Theme.font-s.norm;
+                horizontal-alignment: center;
+                color: Theme.fg-c.surface;
+            }
+        }
+
+        spacer := Rectangle {
+            width: 20px;
+        }
+
+        Text {
+            text: root.data.log;
+            font-size: Theme.font-s.norm;
+            color: Theme.fg-c.surface;
+            overflow: elide;
+        }
+    }
+}
+
+export component LogTable inherits Rectangle {
+    in property <[Log-Data]> logs;
+    in property <bool> tele: true;
+    in property <bool> inserial: true;
+    in property <bool> outserial: true;
+
+    HL {
+        padding: 0px;
+        VL {
+            padding: 0px;
+
+            Log-Header {
+                columns: ["Date", "Time", "Kind", "Log"];
+            }
+
+            ListView {
+                vertical-scrollbar-policy: always-off;
+                for elem[index] in logs: VerticalLayout {
+                    private property <bool> tele: elem.is-tele;
+                    private property <bool> outflow: elem.outflow;
+                    private property <bool> allowed: (root.tele && tele) || (root.inserial && !outflow && !tele) || (root.outserial && outflow && !tele);
+
+                    width: root.width;
+                    if allowed: Log-Item
+                    {
+                        data: elem;
+                    clicked => {}
+                }
+
+                if allowed && (index != logs.length - 1): spacer := Rectangle {
+                    height: Theme.gap-s.base;
+                }
+            }
+        }
+    }
+}
+
+}

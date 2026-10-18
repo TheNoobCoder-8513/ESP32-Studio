@@ -1,7 +1,12 @@
 import { Glue } from "glue.slint";
-import { LogItem-Data } from "app/screens/serial/logtable.slint";
+
+import { Serial-Data } from "app/screens/serial/serialtable.slint";
+import { Log-Data } from "app/screens/logs/logtable.slint";
 
 export global State {
+
+    // Navbar
+    in-out property <int> active-screen: 2;
 
     // Statusbar
     in-out property <string> tooltip: "Statusbar";
@@ -13,14 +18,31 @@ export global State {
     pure callback connect <=> Glue.connect;
     pure callback disconnect <=> Glue.disconnect;
 
-    // Logs tools
-    in-out property <int> active-screen;
-    pure callback export <=> Glue.export;
+    // Serial tools
+    pure callback clear-serial-logs <=> Glue.clear-serial-output;
+    pure callback export <=> Glue.export-serial-output;
 
-    // ESP screen
+    // Logs tools
+    pure callback clear-all-logs <=> Glue.clear-logs;
+    in-out property <bool> tele: true;
+    in-out property <bool> inserial: true;
+    in-out property <bool> outserial: true;
+
+    /*
+
+
+        Screen
+    
+
+    */
+
+    // Home screen
     pure callback change-pin <=> Glue.change-pin;
 
-    // Logs screen
-    in-out property <[LogItem-Data]> logs <=> Glue.logs;
+    // Serial screen
+    in-out property <[Serial-Data]> serial-logs <=> Glue.serial-ouput;
     callback send-serial-input <=> Glue.send-serial-input;
+
+    // Logs screen
+    in-out property <[Log-Data]> all-logs <=> Glue.logs;
 }

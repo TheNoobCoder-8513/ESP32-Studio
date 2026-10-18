@@ -1,0 +1,12 @@
+import { LogTable } from "logtable.slint";
+import { State } from "../../../state.slint";
+
+
+export component Log inherits Rectangle {
+    LogTable {
+        logs: State.all-logs;
+        tele: State.tele;
+        inserial: State.inserial;
+        outserial: State.outserial;
+    }
+}

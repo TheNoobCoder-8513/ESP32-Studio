@@ -176,3 +176,51 @@ export component Icon-Button inherits Panel {
         }
     ]
 }
+
+export component Check-Button inherits Panel {
+    in property <length> size: 20px;
+    in-out property <bool> enabled: true;
+    in-out property <bool> selected: false;
+
+    callback toggled();
+
+    height: self.size;
+    width: self.height;
+
+    border-width: 1px;
+    border-color: Theme.bor-c.base;
+    background: Theme.bg.page;
+
+    touch := TouchArea {
+        enabled: root.enabled;
+        clicked => {
+            if (root.enabled) {
+                root.selected = !root.selected;
+                root.toggled();
+            }
+        }
+    }
+
+    select := Panel {
+        x: 5px;
+        y: 5px;
+        height: 10px;
+        width: 10px;
+        background: root.selected ? Theme.accent : transparent;
+    }
+
+    states [
+        disabled when !root.enabled: {
+            border-width: 1px;
+            background: Theme.bg.base;
+            border-color: Theme.bor-c.base;
+        }
+        clicked when touch.pressed: {
+            background: Theme.bg.highlight;
+        }
+        hovered when touch.has-hover: {
+            border-width: 1px;
+            border-color: Theme.bor-c.page;
+        }
+    ]
+}
