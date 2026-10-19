@@ -1,7 +1,8 @@
 import { Serial-Data } from "app/screens/serial/serialtable.slint";
 import { Log-Data } from "app/screens/logs/logtable.slint";
+import { Track-Pin } from "app/screens/track/tracker.slint";
 
-export global Glue {    
+export global Glue {
 
     // Home
     pure callback connect(string, string);
@@ -20,6 +21,9 @@ export global Glue {
     pure callback clear-logs();
     in-out property <[Log-Data]> logs: self.mock-all-logs;
 
+    // Track
+    callback toggle-pin-track(int, bool);
+    in-out property <[Track-Pin]> tracked-pins: mock-tracked-pins;
 
     /*
 
@@ -273,5 +277,17 @@ export global Glue {
         { date: "2026-10-18", time: "09:30:00", log: "RX: DATA,VAL1=24.0,VAL2=1012" },
         { date: "2026-10-18", time: "09:35:10", log: "Checksum verified successfully." },
         { date: "2026-10-18", time: "09:40:00", log: "RX: DATA,VAL1=23.9,VAL2=1013" }
+    ];
+    private property <[Track-Pin]> mock-tracked-pins: [
+        { gpio: 36, data: [1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0, 1] },
+        { gpio: 39, data: [0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0, 1] },
+        { gpio: 34, data: [1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1] },
+        { gpio: 35, data: [0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0] },
+        { gpio: 32, data: [1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0] },
+        { gpio: 33, data: [0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1] },
+        { gpio: 25, data: [1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0] },
+        { gpio: 26, data: [0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1] },
+        { gpio: 27, data: [1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0] },
+        { gpio: 14, data: [0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1] }
     ];
 }

@@ -1,51 +1,54 @@
-import { Panel, HL, Check-Button } from "../../widget.slint";
+import { Panel, HL, Check-Button, VL } from "../../widget.slint";
+import { Theme } from "../../../theme.slint";
 import { Chart } from "chart.slint";
 import {
-    Track-List,
-    Track-Item,
-    Pin-Track-Def,
-    Track-Val,
+    Track-Pin,
+    Track-Pin-Selector,
+    Chart-Pin-Selector,
 } from "tracker.slint";
 import { State } from "../../../state.slint";
 
-
 export component Track inherits HL {
-    property <int> active: 0;
-    property <[Pin-Track-Def]> pins-status <=> State.pin-track-status;
+    property <[Track-Pin]> tracked-pins;
+    pure callback toggle-track-pin(int);
 
     padding: 0px;
-    Track-List {
-        pins <=> root.pins-status;
+    spacing: Theme.gap-s.norm;
 
-        for item[index] in self.pins: Track-Item {
-            title: "Pin  " + item.gpio;
-
-            status: item.active;
-
-            track => {
-                item.active = true;
-                root.active += 1;
-            }
-            untrack => {
-                item.active = false;
-                root.active -= 1;
-            }
-        }
+    Track-Pin-Selector {
+        toggle-track-pin(pin) => { root.toggle-track-pin(pin); }
     }
 
-    Chart { }
+    if tracked-pins.length == 0: Panel { 
+        // Make an empty state component here
+    }
 
-    if active > 0: Flickable {
-        width: 200px;
+    if tracked-pins.length > 0: HL {
+        property <int> active-chart;
 
-        VerticalLayout {
-            alignment: start;
+        padding: 0px;
 
-            for item[index] in root.pins-status: VerticalLayout {
-                if item.active: Track-Val {
-                    label: "Pin" + item.gpio;
-                    value: "0";
+        Chart-Pin-Selector {
+            tracked-pins: root.tracked-pins;
+            active-chart <=> parent.active-chart;
+        }
+
+        VL {
+            padding: 0px;
+            Panel {
+                HL {
+                    padding: Theme.gap-s.norm;
+                    Text {
+                        text: "Timeline";
+                        font-size: Theme.font-s.mid;
+                        color: Theme.fg-c.page;
+                        font-weight: 900;
+                    }
                 }
+            }
+
+            Chart {
+                series: root.tracked-pins[active-chart].data;
             }
         }
     }

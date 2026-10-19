@@ -6,13 +6,13 @@ use std::sync::{Arc, Mutex};
 use chrono::Local;
 use slint::{Global, ModelRc, VecModel};
 
-use crate::{AppWindow, Glue, LogItem_Data};
+use crate::{AppWindow, Glue, Log_Data};
 
 pub const MAX_LOG_LINES: usize = 500;
 
 #[derive(Clone)]
 pub struct LogManager {
-    storage: Arc<Mutex<VecDeque<LogItem_Data>>>,
+    storage: Arc<Mutex<VecDeque<Log_Data>>>,
 }
 
 impl LogManager {
@@ -29,9 +29,11 @@ impl LogManager {
         let time_str = now.format("%H:%M:%S").to_string();
         let formatted_msg = format!("[{}] {}", source, msg);
 
-        let item = LogItem_Data {
+        let item = Log_Data {
             date: date_str.into(),
             time: time_str.into(),
+            outflow: source == "TX",
+            is_tele: source == "TEL",
             log: formatted_msg.into(),
         };
 
@@ -41,7 +43,7 @@ impl LogManager {
         }
         storage.push_back(item);
 
-        let snapshot: Vec<LogItem_Data> = storage.iter().cloned().collect();
+        let snapshot: Vec<Log_Data> = storage.iter().cloned().collect();
         let _ = ui_weak.upgrade_in_event_loop(move |ui| {
             let glue = Glue::get(&ui);
             glue.set_logs(ModelRc::new(VecModel::from(snapshot)));

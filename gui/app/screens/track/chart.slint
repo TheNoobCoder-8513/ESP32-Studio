@@ -1,4 +1,34 @@
-import { Panel } from "../../widget.slint";
-export component Chart inherits Panel { 
-    
+import { Panel, HL, VL } from "../../widget.slint";
+import { Theme } from "../../../theme.slint";
+
+
+component Stick {
+    in property <float> fraction;
+
+    Panel {
+        height: root.height * fraction;
+        y: root.height - self.height;
+        border-color: Theme.bor-c.base;
+    }
+}
+
+export component Chart inherits Rectangle {
+    in property <[float]> series: [0, 1, 1, 0];
+
+    in property <int> max-val: 1;
+
+    function get-h(val: int) -> float {
+        if val >= max-val { 1.0 } else {
+            val / max-val
+        }
+    }
+
+    HL {
+        private property <int> max-sticks: 60;
+        for i in max-sticks - series.length: Rectangle { }
+        for i in series.length: Stick {
+
+            fraction: get-h(series[i]);
+        }
+    }
 }

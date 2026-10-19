@@ -180,18 +180,16 @@ export component LogTable inherits Rectangle {
                     private property <bool> allowed: (root.tele && tele) || (root.inserial && !outflow && !tele) || (root.outserial && outflow && !tele);
 
                     width: root.width;
-                    if allowed: Log-Item
-                    {
+                    if allowed: Log-Item {
                         data: elem;
-                    clicked => {}
-                }
+                        clicked => {}
+                    }
 
-                if allowed && (index != logs.length - 1): spacer := Rectangle {
-                    height: Theme.gap-s.base;
+                    if allowed && (index != logs.length - 1): spacer := Rectangle {
+                        height: Theme.gap-s.base;
+                    }
                 }
             }
         }
     }
-}
-
 }
