@@ -45,17 +45,16 @@ export component Navbar {
                 accented: index == active;
                 tooltip-enabled: true;
                 enabled: {
-                    // if index == 0 { true }
-                    // else if (State.connected) { true } else { false }
-                    true
+                    if index == 0 { true }
+                    else if (State.connected) { true } else { false }
                 }
                 hovered => {
                     State.tooltip = elem.tooltip;
                 }
                 clicked => {
-                    // if (State.connected) {
+                    if (State.connected) {
                         root.active = index;
-                    // }
+                    }
                 }
             }
         }
