@@ -1,0 +1,66 @@
+import { Panel, VL, HL, Check-Button } from "../../widget.slint";
+import { Theme } from "../../../theme.slint";
+
+export struct Var-Data {
+    label: string,
+    max: float,
+    data: [float],
+}
+
+
+
+export component Chart-Pin-Selector inherits VL {
+    in-out property <int> active-chart;
+    in property <[Var-Data]> variables;
+
+    alignment: start;
+    padding: 0px;
+
+    Flickable {
+
+        VerticalLayout {
+            for item[index] in root.variables: VerticalLayout {
+                height: 80px;
+                Panel {
+
+                    VL {
+                        cross-axis-alignment: center;
+
+                        Text {
+                            text: item.data.length > 0 ? ((Math.round(item.data[item.data.length - 1] * 10) / 10) + "") : "--";
+                            font-size: Theme.font-s.mid;
+                            color: Theme.accent;
+                            font-weight: 900;
+                        }
+
+                        Text {
+                            text: item.label;
+                            font-size: Theme.font-s.norm;
+                            color: Theme.fg-c.page;
+                            overflow: elide;
+                        }
+                    }
+
+                    touch := TouchArea {
+                        clicked => {
+                            root.active-chart = index;
+                        }
+                    }
+
+                    states [
+                        active when root.active-chart == index: {
+                            border-color: Theme.accent;
+                        }
+                        hovered when touch.has-hover: {
+                            border-color: Theme.bor-c.page;
+                        }
+                    ]
+                }
+
+                if index != root.variables.length - 1: Rectangle {
+                    height: Theme.gap-s.base;
+                }
+            }
+        }
+    }
+}

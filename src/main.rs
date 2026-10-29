@@ -13,41 +13,49 @@ mod logger;
 mod protocol;
 mod serial;
 pub mod simulator;
+pub mod tracker;
 
 use logger::LogManager;
 use serial::{SerialCmd, get_available_ports, start_serial_worker};
 use simulator::start_esp_simulator;
+use tracker::TrackManager;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let ui = AppWindow::new()?;
     let ui_weak = ui.as_weak();
 
     let logger = LogManager::new();
+    let tracker = TrackManager::new();
     let (tx_cmd, rx_cmd) = channel::<SerialCmd>();
 
     // Initial system greeting in log table
     logger.log(&ui_weak, "SYS", "Garden ESP32 Controller ready (Simulator Active).");
 
-    // 1. Start ESP32 Thread Simulator (sends telemetry data every 1 second)
+    // 1. Start ESP32 Thread Simulator (sends telemetry data every 2 second)
     let (tx_to_main, rx_from_sim) = channel::<String>();
     let sim_handle = start_esp_simulator(tx_to_main);
 
-    // Forward simulated telemetry packets to the UI logger
+    // Forward simulated telemetry packets to the UI logger and TrackManager
     let ui_weak_sim = ui_weak.clone();
     let logger_sim = logger.clone();
+    let tracker_sim = tracker.clone();
     std::thread::spawn(move || {
         while let Ok(data) = rx_from_sim.recv() {
             logger_sim.log(&ui_weak_sim, "TEL", &data);
+            tracker_sim.update_telemetry(&ui_weak_sim, &data);
         }
     });
 
     // Start serial worker thread for physical ports
-    start_serial_worker(rx_cmd, ui_weak.clone(), logger.clone());
+    start_serial_worker(rx_cmd, ui_weak.clone(), logger.clone(), tracker.clone());
 
     let glue = Glue::get(&ui);
 
     // Mark connected by default to virtual simulator
     glue.set_app_connected(true);
+    // Initialize variables and serial output to empty so UI starts clean
+    glue.set_variables(ModelRc::new(VecModel::default()));
+    glue.set_serial_output(ModelRc::new(VecModel::default()));
 
     // Callback: refresh_ports() -> [string]
     glue.on_refresh_ports(move || {
@@ -126,27 +134,31 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     });
 
-    // Callback: toggle_pin_track(gpio, active)
-    let logger_track = logger.clone();
-    let ui_weak_track = ui_weak.clone();
-    glue.on_toggle_pin_track(move |gpio, active| {
-        logger_track.log(
-            &ui_weak_track,
-            "SYS",
-            &format!("Tracking {} for GPIO {}", if active { "ENABLED" } else { "DISABLED" }, gpio),
-        );
+
+    // Callback: clear_logs()
+    let logger_clear = logger.clone();
+    let ui_weak_clear = ui_weak.clone();
+    glue.on_clear_logs(move || {
+        logger_clear.clear(&ui_weak_clear);
+    });
+
+    // Callback: clear_serial_output()
+    let logger_clear_serial = logger.clone();
+    let ui_weak_clear_serial = ui_weak.clone();
+    glue.on_clear_serial_output(move || {
+        logger_clear_serial.clear_serial(&ui_weak_clear_serial);
     });
 
     // Callback: export_serial_output(logs)
     let logger_export = logger.clone();
     let ui_weak_export = ui_weak.clone();
     glue.on_export_serial_output(move |_logs| {
-        match logger_export.export_logs() {
+        match logger_export.export_serial_logs() {
             Ok(filename) => {
                 logger_export.log(
                     &ui_weak_export,
                     "SYS",
-                    &format!("Logs exported to {}", filename),
+                    &format!("Serial logs exported to {}", filename),
                 );
             }
             Err(e) => {

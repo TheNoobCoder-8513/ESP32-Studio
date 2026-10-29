@@ -1,0 +1,61 @@
+import { Panel, HL, Check-Button, VL } from "../../widget.slint";
+import { Theme } from "../../../theme.slint";
+import { Chart } from "chart.slint";
+import {
+    Var-Data,
+    Chart-Pin-Selector,
+} from "track.slint";
+import { State } from "../../../state.slint";
+import { Glue } from "../../../glue.slint";
+
+export component Variable inherits HL {
+    property <[Var-Data]> variables: State.variables;
+
+    padding: 0px;
+    spacing: Theme.gap-s.norm;
+
+    if variables.length == 0: Panel {
+        VL {
+            alignment: center;
+            cross-axis-alignment: center;
+            spacing: Theme.gap-s.norm;
+            padding: Theme.gap-s.large;
+
+            Text {
+                text: "No Telemetry Variables";
+                font-size: Theme.font-s.large;
+                font-weight: 700;
+                color: Theme.fg-c.surface;
+                horizontal-alignment: center;
+            }
+
+            Text {
+                text: "Awaiting incoming variable telemetry from ESP32...";
+                font-size: Theme.font-s.norm;
+                color: Theme.fg-c.page;
+                horizontal-alignment: center;
+            }
+        }
+    }
+
+    if variables.length > 0: HL {
+        property <int> active-chart <=> State.active-var-chart;
+        property <int> safe-chart: max(0, min(self.active-chart, root.variables.length - 1));
+
+        padding: 0px;
+        spacing: Theme.gap-s.norm;
+
+        Chart {
+            label: root.variables[safe-chart].label;
+            max-val: root.variables[safe-chart].max;
+            series: root.variables[safe-chart].data;
+        }
+
+        Chart-Pin-Selector {
+            width: 200px;
+
+            variables: root.variables;
+            active-chart <=> parent.active-chart;
+        }
+    }
+}

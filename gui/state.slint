@@ -2,7 +2,7 @@ import { Glue } from "glue.slint";
 
 import { Serial-Data } from "app/screens/serial/serialtable.slint";
 import { Log-Data } from "app/screens/logs/logtable.slint";
-import { Track-Pin } from "app/screens/track/tracker.slint";
+import { Var-Data } from "app/screens/variable/track.slint";
 
 
 
@@ -43,13 +43,13 @@ export global State {
     pure callback change-pin <=> Glue.change-pin;
 
     // Serial screen
-    in-out property <[Serial-Data]> serial-logs <=> Glue.serial-ouput;
+    in-out property <[Serial-Data]> serial-logs <=> Glue.serial-output;
     callback send-serial-input <=> Glue.send-serial-input;
 
     // Logs screen
     in-out property <[Log-Data]> all-logs <=> Glue.logs;
 
     // Track screen
-    in-out property <[Track-Pin]> tracked-pins <=> Glue.tracked-pins;
-    callback toggle-pin-track <=> Glue.toggle-pin-track;
+    in-out property <[Var-Data]> variables <=> Glue.variables;
+    in-out property <int> active-var-chart;
 }

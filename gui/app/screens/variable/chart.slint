@@ -1,0 +1,54 @@
+import { Panel, HL, VL } from "../../widget.slint";
+import { Theme } from "../../../theme.slint";
+
+component Stick {
+    in property <float> fraction;
+
+    Panel {
+        height: max(2px, root.height * fraction);
+        y: root.height - self.height;
+        border-color: root.fraction > 0 ? Theme.accent : Theme.bor-c.base;
+        background: root.fraction > 0 ? Theme.accent : Theme.bg.surface;
+    }
+}
+
+export component Chart inherits Panel {
+    in property <string> label;
+    in property <[float]> series: [0.0, 1.0, 1.0, 0.0];
+    in property <float> max-val: 1.0;
+
+    function get-h(val: float) -> float {
+        if max-val <= 0.0 { 0.0 } else if val >= max-val { 1.0 } else if val <= 0.0 { 0.0 } else {
+            val / max-val
+        }
+    }
+
+    VL {
+        padding: Theme.gap-s.norm;
+        HorizontalLayout {
+            alignment: space-between;
+
+            Text {
+                text: root.label;
+                font-size: Theme.font-s.mid;
+                color: Theme.fg-c.page;
+                font-weight: 900;
+            }
+
+            Text {
+                text: root.series.length + " samples";
+                font-size: Theme.font-s.norm;
+                color: Theme.fg-c.page;
+            }
+        }
+
+        HL {
+            padding: Theme.gap-s.norm;
+            private property <int> max-sticks: 60;
+            for i in max(0, max-sticks - series.length): Rectangle { }
+            for i in series.length: Stick {
+                fraction: get-h(series[i]);
+            }
+        }
+    }
+}

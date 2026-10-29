@@ -28,6 +28,7 @@ pub fn start_serial_worker(
     rx_cmd: Receiver<SerialCmd>,
     ui_weak: slint::Weak<AppWindow>,
     logger: LogManager,
+    tracker: crate::tracker::TrackManager,
 ) {
     thread::spawn(move || {
         let mut port: Option<Box<dyn serialport::SerialPort>> = None;
@@ -121,7 +122,12 @@ pub fn start_serial_worker(
                             let line = line_accumulator[..pos].trim_matches('\r').to_string();
                             line_accumulator.drain(..=pos);
                             if !line.is_empty() {
-                                logger.log(&ui_weak, "RX", &line);
+                                if line.contains(r#""type":"telemetry""#) {
+                                    logger.log(&ui_weak, "TEL", &line);
+                                } else {
+                                    logger.log(&ui_weak, "RX", &line);
+                                }
+                                tracker.update_telemetry(&ui_weak, &line);
                             }
                         }
                     }

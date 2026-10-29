@@ -135,9 +135,21 @@ pub fn start_esp_simulator(tx_to_main: Sender<String>) -> EspSimulatorHandle {
             }
             pins_json.push(']');
 
+            // Simulate realistic environmental and system variables
+            let temp = 24.5 + ((tick_counter as f32 * 0.3).sin() * 2.5);
+            let volt = 3.28 + ((tick_counter as f32 * 0.5).sin() * 0.03);
+            let humidity = 50.0 + ((tick_counter as f32 * 0.2).cos() * 5.0);
+            let cpu = 15.0 + ((tick_counter as f32 * 0.7).sin().abs() * 25.0);
+            let heap = 215.0 + ((tick_counter as f32 * 0.1).sin() * 15.0);
+
+            let vars_json = format!(
+                r#"[{{"name":"Temperature (°C)","val":{:.1},"max":100.0}},{{"name":"Voltage (V)","val":{:.2},"max":3.3}},{{"name":"Humidity (%)","val":{:.1},"max":100.0}},{{"name":"CPU Load (%)","val":{:.1},"max":100.0}},{{"name":"Free Heap (KB)","val":{:.1},"max":320.0}}]"#,
+                temp, volt, humidity, cpu, heap
+            );
+
             let data_payload = format!(
-                r#"{{"type":"telemetry","device":"ESP32-NodeMCU-v1","uptime_s":{},"pins":{}}}"#,
-                uptime_s, pins_json
+                r#"{{"type":"telemetry","device":"ESP32-NodeMCU-v1","uptime_s":{},"pins":{},"vars":{}}}"#,
+                uptime_s, pins_json, vars_json
             );
 
             // 4. Print to console in the required format:
@@ -148,10 +160,10 @@ pub fn start_esp_simulator(tx_to_main: Sender<String>) -> EspSimulatorHandle {
             // 5. Send data payload to the main program
             let _ = tx_to_main.send(data_payload);
 
-            // 6. Sleep for the remainder of the 1-second interval
+            // 6. Sleep for the remainder of the 2-second interval (30 packets / min)
             let elapsed = loop_start.elapsed();
-            if elapsed < Duration::from_secs(1) {
-                thread::sleep(Duration::from_secs(1) - elapsed);
+            if elapsed < Duration::from_secs(2) {
+                thread::sleep(Duration::from_secs(2) - elapsed);
             }
         }
 
@@ -186,17 +198,19 @@ mod tests {
 
         // Receive at least one telemetry packet
         let first_msg = rx_from_sim
-            .recv_timeout(Duration::from_millis(1500))
-            .expect("Should receive data within 1.5s");
+            .recv_timeout(Duration::from_millis(2500))
+            .expect("Should receive data within 2.5s");
         assert!(first_msg.contains("ESP32-NodeMCU-v1"));
         assert!(first_msg.contains(r#""pin":1"#));
+        assert!(first_msg.contains(r#""vars""#));
+        assert!(first_msg.contains("Temperature"));
 
         // Send a command to toggle GPIO 23 ON
         handle.cmd_sender.send("23:on\n".to_string()).unwrap();
 
         // Receive next packet with updated GPIO 23
         let second_msg = rx_from_sim
-            .recv_timeout(Duration::from_millis(1500))
+            .recv_timeout(Duration::from_millis(2500))
             .expect("Should receive second packet");
         assert!(second_msg.contains(r#"{"pin":16,"name":"GPIO23","gpio":23,"status":true}"#));
 

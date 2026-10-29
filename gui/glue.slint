@@ -1,6 +1,6 @@
 import { Serial-Data } from "app/screens/serial/serialtable.slint";
 import { Log-Data } from "app/screens/logs/logtable.slint";
-import { Track-Pin } from "app/screens/track/tracker.slint";
+import { Var-Data } from "app/screens/variable/track.slint";
 
 export global Glue {
 
@@ -15,15 +15,14 @@ export global Glue {
     pure callback clear-serial-output();
     pure callback export-serial-output([Serial-Data]);
     callback send-serial-input(string);
-    in-out property <[Serial-Data]> serial-ouput: self.mock-serial-logs;
+    in-out property <[Serial-Data]> serial-output: self.mock-serial-logs;
 
     // Logs
     pure callback clear-logs();
     in-out property <[Log-Data]> logs: self.mock-all-logs;
 
-    // Track
-    callback toggle-pin-track(int, bool);
-    in-out property <[Track-Pin]> tracked-pins: mock-tracked-pins;
+    // Variables Telemetry
+    in-out property <[Var-Data]> variables: mock-var-data;
 
     /*
 
@@ -278,16 +277,26 @@ export global Glue {
         { date: "2026-10-18", time: "09:35:10", log: "Checksum verified successfully." },
         { date: "2026-10-18", time: "09:40:00", log: "RX: DATA,VAL1=23.9,VAL2=1013" }
     ];
-    private property <[Track-Pin]> mock-tracked-pins: [
-        { gpio: 36, data: [1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0, 1] },
-        { gpio: 39, data: [0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0, 1] },
-        { gpio: 34, data: [1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1] },
-        { gpio: 35, data: [0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0] },
-        { gpio: 32, data: [1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0] },
-        { gpio: 33, data: [0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1] },
-        { gpio: 25, data: [1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0] },
-        { gpio: 26, data: [0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1] },
-        { gpio: 27, data: [1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0] },
-        { gpio: 14, data: [0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1] }
+    property <[Var-Data]> mock-var-data: [
+        {
+            label: "Temperature (°C)",
+            max: 100.0,
+            data: [24.5, 25.1, 26.0, 25.8, 27.2, 28.0, 27.5, 26.9, 26.4, 25.0]
+        },
+        {
+            label: "Voltage (V)",
+            max: 3.3,
+            data: [3.28, 3.30, 3.29, 3.27, 3.31, 3.26, 3.28, 3.29, 3.30, 3.28]
+        },
+        {
+            label: "Humidity (%)",
+            max: 100.0,
+            data: [45.0, 46.2, 48.0, 47.5, 49.1, 50.3, 48.8, 47.2, 46.0, 45.5]
+        },
+        {
+            label: "CPU Usage (%)",
+            max: 100.0,
+            data: [12.0, 15.4, 18.2, 45.0, 22.1, 14.5, 13.0, 16.8, 15.0, 12.5]
+        }
     ];
 }
