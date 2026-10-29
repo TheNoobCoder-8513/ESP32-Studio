@@ -3,11 +3,11 @@
 **A modern, reactive desktop GUI and telemetry workbench for ESP32 microcontrollers.**
 ## **Work in Progresss.**
 
-![](https://github.com/TheNoobCoder-8513/ESP32-Studio/blob/main/screenshos/ss-1.png)
-![](https://github.com/TheNoobCoder-8513/ESP32-Studio/blob/main/screenshos/ss-2.png)
-![](https://github.com/TheNoobCoder-8513/ESP32-Studio/blob/main/screenshos/ss-3.png)
-![](https://github.com/TheNoobCoder-8513/ESP32-Studio/blob/main/screenshos/ss-4.png)
-![](https://github.com/TheNoobCoder-8513/ESP32-Studio/blob/main/screenshos/ss-5.png)
+![](https://github.com/TheNoobCoder-8513/ESP32-Studio/blob/main/screenshots/ss-1.png)
+![](https://github.com/TheNoobCoder-8513/ESP32-Studio/blob/main/screenshots/ss-2.png)
+![](https://github.com/TheNoobCoder-8513/ESP32-Studio/blob/main/screenshots/ss-3.png)
+![](https://github.com/TheNoobCoder-8513/ESP32-Studio/blob/main/screenshots/ss-4.png)
+![](https://github.com/TheNoobCoder-8513/ESP32-Studio/blob/main/screenshots/ss-5.png)
 
 Built with **Rust** and **Slint**, ESP32-Studio provides real-time GPIO control, streaming variable telemetry visualizations, a dedicated serial monitor, and an integrated virtual simulator for developing and debugging ESP32 projects without hardware dependencies.
 
