@@ -3,7 +3,7 @@
 version = 4
 
 [[package]]
-name = "Garden"
+name = "ESP32-Studio"
 version = "0.1.0"
 dependencies = [
  "chrono",
