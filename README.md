@@ -49,44 +49,6 @@ Built with **Rust** and **Slint**, ESP32-Studio provides real-time GPIO control,
 
 ---
 
-## Architecture
-
-```mermaid
-flowchart TD
-    subgraph Hardware ["Hardware / Virtual Source"]
-        ESP["ESP32 Microcontroller\n(flash.cpp)"]
-        SIM["Virtual ESP32 Simulator\n(src/simulator.rs)"]
-    end
-
-    subgraph Backend ["Rust Backend (Core Engine)"]
-        SW["Serial Worker Thread\n(src/serial.rs)"]
-        PROTO["Protocol Formatter\n(src/protocol.rs)"]
-        TRACK["TrackManager\n(src/tracker.rs)"]
-        LOG["LogManager\n(src/logger.rs)"]
-    end
-
-    subgraph UI ["Slint Desktop GUI (gui/)"]
-        GLUE["Glue & State Bridge\n(glue.slint / state.slint)"]
-        HOME["Home Screen\n(Interactive 30-Pin DevKit)"]
-        SERIAL["Serial Screen\n(UART Monitor & Input)"]
-        VARS["Variable Screen\n(Telemetry Series & Waveforms)"]
-        LOGS["Logs Screen\n(Filtered Event Tables)"]
-    end
-
-    ESP <-->|UART @ 115200| SW
-    SIM <-->|Channels| SW
-    SW --> PROTO
-    SW --> TRACK
-    SW --> LOG
-    TRACK -->|Var_Data Model| GLUE
-    LOG -->|Log_Data & Serial_Data Model| GLUE
-    GLUE <--> HOME
-    GLUE <--> SERIAL
-    GLUE <--> VARS
-    GLUE <--> LOGS
-```
-
----
 
 ## Repository Structure
 
@@ -304,22 +266,4 @@ ESP32-Studio/
 
 ---
 
-## Connecting to an ESP32
-
-### Option 1: Virtual Simulator (Default)
-When launched, ESP32-Studio automatically starts the internal **Virtual ESP32 Simulator**.
-- In the top bar, the port dropdown will list `ESP32-Simulator (Virtual)`.
-- Click **Connect** (already connected by default).
-- You can immediately test pin toggles on the Home screen, inspect incoming variables in the Variable tab, and send test commands.
-
-### Option 2: Physical Hardware
-1. Connect your **ESP32 NodeMCU DevKit v1** via USB.
-2. Flash the provided firmware sketch [`flash.cpp`](flash.cpp) onto your board using Arduino IDE or PlatformIO:
-   - Baud Rate: `115200`
-   - Board: `NodeMCU-32S` or `ESP32 Dev Module`
-3. In ESP32-Studio's top bar, click the **Refresh** button next to the port dropdown.
-4. Select your board's serial port (e.g. `/dev/ttyUSB0` on Linux, `COM3` on Windows).
-5. Ensure baud rate is set to `115200` and click **Connect**.
-
----
 
